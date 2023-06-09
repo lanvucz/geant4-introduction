@@ -1,0 +1,12 @@
+# This macro just runs one single particle
+# to prove that the application works
+#
+# Run it using "./task macros/basic.mac"
+/run/initialize
+
+
+/control/execute macros/vis.mac
+
+/control/execute macros/gps.mac
+
+/run/beamOn 1

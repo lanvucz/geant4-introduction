@@ -1,0 +1,20 @@
+/run/initialize
+/vis/disable
+/gps/particle e-
+/gps/energy 100 MeV
+/gps/pos/centre 0 0 0 cm
+/gps/direction 1 0 0
+/run/setCut  1 um
+/run/beamOn 1000
+/run/setCut  0.01 mm
+/run/beamOn 1000
+/run/setCut  1 mm
+/run/beamOn 1000
+/run/setCut  1 cm
+/run/beamOn 1000
+/run/setCut  10 cm
+/run/beamOn 1000
+/run/setCut  1 m
+/run/beamOn 1000
+/run/setCut  1 km
+/run/beamOn 1000
