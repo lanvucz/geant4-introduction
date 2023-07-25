@@ -5,7 +5,9 @@
 #include "RunAction.hh"
 #include "StackingAction.hh"
 // Task 4a.2: Include the header for SteppingAction
+#include "SteppingAction.hh"
 // Task 4c.2: Include the header for EventAction
+#include "EventAction.hh"
 
 void ActionInitialization::Build() const
 {
@@ -16,7 +18,10 @@ void ActionInitialization::Build() const
     SetUserAction(new StackingAction(theRunAction));
 
     // Task 4a.2: Add a properly initialized instance of SteppingAction
+    SetUserAction(new SteppingAction(theRunAction));
     // Task 4c.2: Add a properly initialized instance of EventAction
+    SetUserAction(new EventAction());
+
 }
 
 void ActionInitialization::BuildForMaster() const

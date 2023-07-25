@@ -8,6 +8,12 @@
 #include <G4Box.hh>
 #include <G4Orb.hh>
 #include <G4SDManager.hh>
+// Task 1c.1: Include the proper header for the magnetic field messenger.
+// Task 4c.1: Include the proper header for the multi-functional detector
+// Task 4c.1: Include the proper header for energy deposit primitive scorer
+#include <G4MultiFunctionalDetector.hh>
+#include <G4VPrimitiveScorer.hh>
+#include <G4PSEnergyDeposit.hh>
 
 using namespace std;
 
@@ -28,7 +34,8 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     G4LogicalVolume* worldLog = new G4LogicalVolume(worldBox, nist->FindOrBuildMaterial("G4_AIR"), "world");
     G4VisAttributes* visAttr = new G4VisAttributes();
     //Task 1b.4: Set the world volume to be invisible
-    visAttr->SetVisibility(true);
+//    visAttr->SetVisibility(true);
+    visAttr->SetVisibility(false);
     worldLog->SetVisAttributes(visAttr);
 
     // 3) Physical volume
@@ -171,14 +178,10 @@ void DetectorConstruction::ConstructDemo(G4LogicalVolume* worldLog)
     }
 }
 
-// Task 1c.1: Include the proper header for the magnetic field messenger.
 
-// Task 4c.1: Include the proper header for the multi-functional detector
 
-// Task 4c.1: Include the proper header for energy deposit primitive scorer
 
-// Task 1c.1: Uncomment the following method definition and implement it
-/**
+// Task 4c.1: Uncomment the following method definition and implement it
 void DetectorConstruction::ConstructSDandField()
 {
     // Task 1c.1: Create the magnetic field messenger
@@ -187,15 +190,24 @@ void DetectorConstruction::ConstructSDandField()
     sdManager->SetVerboseLevel(2);  // Useful for 4c
     
     // Task 4c.1: Create 2 instances of G4MultiFunctionalDetector (for absorber and scintillator)
-    // G4MultiFunctionalDetector* absorberDetector = ...
+    // sensitive detector
+     G4MultiFunctionalDetector* absorberDetector = new G4MultiFunctionalDetector("absorberDetector");
+     G4MultiFunctionalDetector* scintillatorDetector = new G4MultiFunctionalDetector("scintillatorDetector");
 
     // Task 4c.1: Create 2 primitive scorers for the dose and assign them to respective detectors
-    // G4VPrimitiveScorer* absorberScorer = ...
+     G4VPrimitiveScorer* absorberEdep = new G4PSEnergyDeposit("absorberEdep");
+     absorberDetector->RegisterPrimitive(absorberEdep);
+
+     G4VPrimitiveScorer* scintillatorEdep = new G4PSEnergyDeposit("scintillatorEdep");
+     scintillatorDetector->RegisterPrimitive(scintillatorEdep);
 
     // Task 4c.1 Assign multi-functional detectors to the logical volumes and register them to 
     //   the SDmanager
-    // SetSensitiveDetector("....");
-    // sdManager->AddNewDetector(...);
+     SetSensitiveDetector("absorber_LV", absorberDetector);
+     sdManager->AddNewDetector(absorberDetector);
+
+     SetSensitiveDetector("scintillator_LV", scintillatorDetector);
+     sdManager->AddNewDetector(scintillatorDetector);
 
     // Task 4d.2: Comment out the attachment of previous sensitive detectors
     // Task 4d.2: Create and assign the custom sensitive detector. Do not forget to register them 
@@ -203,4 +215,4 @@ void DetectorConstruction::ConstructSDandField()
     // EnergyTimeSD* absorberET = ...
 }
 
-**/
+

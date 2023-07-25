@@ -5,6 +5,7 @@
 #include <G4SystemOfUnits.hh>
 
 // Task 4c.3: Include the necessary Analysis.hh
+#include <Analysis.hh>
 
 RunAction::RunAction() :
   G4UserRunAction(),
@@ -23,20 +24,23 @@ RunAction::RunAction() :
   accumulableManager->RegisterAccumulable(fTotalTrackLength);
   
   // Task 4c.3: Uncomment the following 4 lines to enable analysis.
-  /* G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
+  G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
   analysisManager->SetVerboseLevel(1);
   analysisManager->SetFirstNtupleId(1);
-  analysisManager->SetFirstHistoId(1); */
+  analysisManager->SetFirstHistoId(1);
 
   // Create histogram to be used in 4c
   // Task 4c.3: Create histogram with 20 bins, with limits of 50 and 60 cm
   // (i.e. each bin will correspond to one layer of the callorimeter)
 
+  // id = 1
+   analysisManager->CreateH1("eDep", "deposited energy in absorber and scintillator", 20, 50, 60);
+
   // Task 4d.3: Create ntuple containing 5 double fields:
   //   EnergyDeposit, Time, X, Y & Z
 
   // Task 4c.3: Open file task (extension will be added automatically)
-  // analysisManager->OpenFile("task4");  
+   analysisManager->OpenFile("task4");
 }
 
 
@@ -97,8 +101,8 @@ void RunAction::EndOfRunAction(const G4Run* run)
 RunAction::~RunAction()
 {
     // Task 4c.3: Uncomment the following 2 lines to enable analysis.
-    /* G4AnalysisManager* man = G4AnalysisManager::Instance();
-    man->Write(); */
+    G4AnalysisManager* man = G4AnalysisManager::Instance();
+    man->Write();
 }
 
 void RunAction::AddSecondary(const G4ParticleDefinition* particle,
@@ -117,7 +121,8 @@ void RunAction::AddSecondary(const G4ParticleDefinition* particle,
   return;
 }
 
-void RunAction::AddTrackLength(G4double /*trackLength*/)
+void RunAction::AddTrackLength(G4double trackLength)
 {
     // Task 4a.2: Add the track length to the appropriate parameter
+    fTotalTrackLength += trackLength;
 }

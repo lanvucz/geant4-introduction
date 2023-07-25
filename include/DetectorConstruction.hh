@@ -18,7 +18,7 @@ public:
     G4VPhysicalVolume* Construct() override;
 
     // Task 1c.1: Uncomment the declaration of this method
-    // void ConstructSDandField() override;
+     void ConstructSDandField() override;
 
 private:
     // An example geometry created for you to finish task 0

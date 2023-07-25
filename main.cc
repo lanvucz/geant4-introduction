@@ -5,7 +5,7 @@
 #include <G4UIExecutive.hh>
 #include <G4String.hh>
 #include <G4UImanager.hh>
-#include <QGSP_BIC.hh>
+
 
 #include "ActionInitialization.hh"
 
@@ -14,10 +14,13 @@
 #include "PhysicsList.hh"
 
 // Task 3b.4: Include (temporarily if you want) header for QGSP
+//#include <QGSP_BIC.hh>
 
 // Task 4b.1: Include the proper header to enable scoring manager
+#include <G4ScoringManager.hh>
 
 // Task 4c.3: Include the proper header to enable analysis tools
+#include <Analysis.hh>
 
 using namespace std;
 
@@ -58,7 +61,7 @@ int main(int argc, char** argv)
   // sequential or other). The flags from G4RunManagerType are:  
   // Default (default), Serial, MT, Tasking, TBB
   auto* runManager  = 
-    G4RunManagerFactory::CreateRunManager(G4RunManagerType::Serial);
+    G4RunManagerFactory::CreateRunManager(G4RunManagerType::MT);
   runManager->SetVerboseLevel(1);
 
   G4VisManager* visManager = new G4VisExecutive();
@@ -81,6 +84,7 @@ int main(int argc, char** argv)
   G4UImanager* UImanager = G4UImanager::GetUIpointer();
 
   // Task 4b.1: You need to access the scoring manager here (or above)
+//    G4ScoringManager::GetScoringManager();
 
   for (auto macro : macros)
     {
@@ -105,8 +109,8 @@ int main(int argc, char** argv)
   delete runManager;
     
   // Task 4c.3: Close the analysis output by uncommmenting the following lines
-  // G4AnalysisManager* man = G4AnalysisManager::Instance();
-  // man->CloseFile();
+   G4AnalysisManager* man = G4AnalysisManager::Instance();
+   man->CloseFile();
 
   G4cout << "Application successfully ended.\nBye :-)" << G4endl;
 

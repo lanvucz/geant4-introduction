@@ -18,7 +18,7 @@ void EventAction::EndOfEventAction(const G4Event* event)
     G4AnalysisManager* analysis = G4AnalysisManager::Instance();
 
     // Task 4c.2: Get the hit collections
-    G4HCofThisEvent* hcofEvent = nullptr;
+    G4HCofThisEvent* hcofEvent = event->GetHCofThisEvent();
 
     // If there is no hit collection, there is nothing to be done
     if(!hcofEvent) return;
@@ -31,13 +31,19 @@ void EventAction::EndOfEventAction(const G4Event* event)
     {
       // Task 4c.2: Retrieve fAbsorberId from sdm: the name of the hit collection to retrieve is
       //  "absorber/energy"
+        fAbsorberId = sdm->GetCollectionID("absorberDetector/absorberEdep");
       // Task 4d.2: ...and comment the block out (if you don't want to see a long error list)
       // fAbsorberId = sdm->....
         G4cout << "EventAction: absorber energy scorer ID: " << fAbsorberId << G4endl;
     }
     // Task 4c.2: Similarly, retrieve fScintillatorId. How is the hit collection named?
     // As before, fScintillatorId is defined in EventAction.hh and initialized to -1
+    if (fScintillatorId < 0)
+    {
+       fScintillatorId = sdm->GetCollectionID("scintillatorDetector/scintillatorEdep");
+       G4cout << "EventAction: scintillator energy scorer ID: " << fScintillatorId << G4endl;
 
+    }
     // Task 4d.2: ...Retrieve fAbsorberETId. What's the name to be used?
     // Task 4d.2: ...Retrieve fScintillatorETId
 
@@ -46,7 +52,7 @@ void EventAction::EndOfEventAction(const G4Event* event)
     if (fAbsorberId >= 0)
     {
       /// Task 4c.2: Get and cast hit collection with energy in absorber
-      G4THitsMap<G4double>* hitMapA = nullptr;
+      G4THitsMap<G4double>* hitMapA = dynamic_cast<G4THitsMap<G4double>*>(hcofEvent->GetHC(fAbsorberId));
       if (hitMapA)
       {
           for (auto pair : *(hitMapA->GetMap()))
@@ -58,6 +64,8 @@ void EventAction::EndOfEventAction(const G4Event* event)
 	      //In short:
               G4double x = 50.25 + (pair.first * 1.0);   // already in cm
               // Task 4c.3. Store the position to the histogram
+              // 'G4bool G4VAnalysisManager::FillH1(G4int,G4double,G4double)
+              analysis->FillH1(histogramId, x, energy);
           }
       }
     }
@@ -65,7 +73,7 @@ void EventAction::EndOfEventAction(const G4Event* event)
     if (fScintillatorId >= 0)
     {
       // Task 4c.2: Get and cast hit collection with energy in scintillator
-      G4THitsMap<G4double>* hitMapS = nullptr;
+      G4THitsMap<G4double>* hitMapS = dynamic_cast<G4THitsMap<G4double>*>(hcofEvent->GetHC(fScintillatorId));
       if (hitMapS)
       {
           for (auto pair : *(hitMapS->GetMap()))
@@ -76,7 +84,9 @@ void EventAction::EndOfEventAction(const G4Event* event)
               //with thickness=0.5*cm. See lines 87 and 94 of DetectorConstruction.cc
 	      //In short:
               G4double x = 50.75 + (pair.first * 1.0);   // already in cm
-              // Task 4c.3. Store the position to the histogram	      
+              // Task 4c.3. Store the position to the histogram
+              analysis->FillH1(histogramId, x, energy);
+
           }
       }
     }
